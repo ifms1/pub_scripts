@@ -23,5 +23,6 @@ Function Disable-WinRmUac() {
 $Certificate = New-WinRmComputerCertificate
 [void](New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Certificate.Thumbprint -Force)
 [void](New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP)
+[void](New-NetFirewallRule -DisplayName 'WinRM HTTP-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5985 -Protocol TCP)
 Disable-WinRmUac
 
