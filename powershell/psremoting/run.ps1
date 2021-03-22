@@ -16,8 +16,12 @@ Function New-WinRmComputerCertificate() {
     }
     return $result
 }
+Function Disable-WinRmUac() {
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name LocalAccountTokenFilterPolicy -Value 1
+}
 [void](Enable-PSRemoting -SkipNetworkProfileCheck -Force)
 $Certificate = New-WinRmComputerCertificate
 [void](New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Certificate.Thumbprint -Force)
 [void](New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP)
+Disable-WinRmUac
 
