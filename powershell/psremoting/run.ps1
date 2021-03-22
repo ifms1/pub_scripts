@@ -1,10 +1,11 @@
+$ErrorActionPreference = 'Stop'
 Function New-WinRmComputerCertificate() {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$false)][string]$Fqdn
     )
     $ErrorActionPreference = 'Stop'
-    if(null -eq $PSBoundParameters.Values('Fqdn')) {
+    if(!$Fqdn) {
         $Fqdn = $Env:COMPUTERNAME
     }
     try {
@@ -15,7 +16,12 @@ Function New-WinRmComputerCertificate() {
     }
     return $result
 }
-Enable-PSRemoting -SkipNetworkProfileCheck -Force
-$Certificate = New-WinRmComputerCertificate
-New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Certificate.Thumbprint -Force
-New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP
+try {
+    Enable-PSRemoting -SkipNetworkProfileCheck -Force
+    $Certificate = New-WinRmComputerCertificate
+    New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Certificate.Thumbprint -Force
+    New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP
+}
+catch {
+    return $_
+}
