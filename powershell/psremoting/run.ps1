@@ -16,12 +16,8 @@ Function New-WinRmComputerCertificate() {
     }
     return $result
 }
-try {
-    Enable-PSRemoting -SkipNetworkProfileCheck -Force
-    $Certificate = New-WinRmComputerCertificate
-    New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Certificate.Thumbprint -Force
-    New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP
-}
-catch {
-    return $_
-}
+[void](Enable-PSRemoting -SkipNetworkProfileCheck -Force)
+$Certificate = New-WinRmComputerCertificate
+[void](New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Certificate.Thumbprint -Force)
+[void](New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP)
+
