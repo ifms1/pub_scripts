@@ -22,7 +22,8 @@ Function Disable-WinRmUac() {
 [void](Enable-PSRemoting -SkipNetworkProfileCheck -Force)
 $Certificate = New-WinRmComputerCertificate
 [void](New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Certificate.Thumbprint -Force)
+[void](New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -Force)
 [void](New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP)
-[void](New-NetFirewallRule -DisplayName 'WinRM HTTP-In' -Name 'WinRM HTTPS-In' -Profile Any -LocalPort 5985 -Protocol TCP)
+[void](New-NetFirewallRule -DisplayName 'WinRM HTTP-In' -Name 'WinRM HTTP-In' -Profile Any -LocalPort 5985 -Protocol TCP)
 Disable-WinRmUac
 
