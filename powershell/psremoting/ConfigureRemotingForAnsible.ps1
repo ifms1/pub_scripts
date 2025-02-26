@@ -75,7 +75,7 @@ Param (
     [int]$CertValidityDays = 1095,
     [switch]$SkipNetworkProfileCheck,
     $CreateSelfSignedCert = $true,
-    [switch]$ForceNewSSLCert,
+    [switch]$ForceNewSSLCert = $true,
     [switch]$GlobalHttpFirewallAccess,
     [switch]$DisableBasicAuth = $false,
     [switch]$EnableCredSSP
@@ -231,6 +231,7 @@ Trap {
     Exit 1
 }
 $ErrorActionPreference = "Stop"
+$VerbosePreference = "continue"
 
 # Get the ID and security principal of the current user account
 $myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
